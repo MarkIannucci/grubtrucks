@@ -15,11 +15,25 @@ jobs:
     runs-on: ubuntu-20.04
     name: AWS CLI Test
     steps:
-      - name: Test ${{ matrix.TEST_NAME }}
-        id: install-aws-cli
-        uses: unfor19/install-aws-cli-action@master
-        with:
-          version: 2
-      - run: aws --version
-      - run: aws ec2 describe-instances
-        shell: bash
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        role-to-assume: psbtestrole
+        #role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        role-duration-seconds: 1200
+        role-session-name: AWSDeploySession
+    - name: Install AWS CLI
+      id: install-aws-cli
+      uses: unfor19/install-aws-cli-action@master
+      with:
+        version: 2
+    - name: Print AWS CLI Version
+      run: aws --version
+    - name: Describe EC2 Instances
+      run: aws ec2 describe-instances
+      shell: bash
