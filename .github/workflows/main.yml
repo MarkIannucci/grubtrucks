@@ -20,7 +20,6 @@ jobs:
         uses: unfor19/install-aws-cli-action@master
         with:
           version: 2
-      - run: 
-          aws --version
-          ec2 describe-instances
+      - run: aws --version
+      - run: ec2 describe-instances
         shell: bash
