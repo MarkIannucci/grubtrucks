@@ -36,8 +36,8 @@ jobs:
     - name: Print AWS CLI Version
       run: aws --version
       
-    - name: Check Commands
-      run: envsubst
+    - name: Environment Substitution
+      run: envsubst '${ENV} ${STACK_NAME} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/grubtrucks.yml > deploy.yml
       
     - name: Describe EC2 Instances
       run: aws ec2 describe-instances
