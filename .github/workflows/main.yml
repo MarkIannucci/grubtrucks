@@ -25,6 +25,7 @@ jobs:
         aws-region: us-east-1
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
         role-duration-seconds: 1200
+        role-session-name: DeploymentSession
         
     - name: Install AWS CLI
       id: install-aws-cli
@@ -34,6 +35,9 @@ jobs:
         
     - name: Print AWS CLI Version
       run: aws --version
+      
+    - name: Check Commands
+      run: envsubst
       
     - name: Describe EC2 Instances
       run: aws ec2 describe-instances
