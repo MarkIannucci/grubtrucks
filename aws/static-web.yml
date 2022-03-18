@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Static Website Creation for ${FQDN}
+Resources:
+  Certificate: 
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: ${FQDN}
+      DomainValidationOptions:
+        - DomainName:   ${FQDN}
+          HostedZoneId: !ImportValue ${DNSZONEID}
+      ValidationMethod: DNS
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${BUCKETNAME}
+      LifecycleConfiguration:
+        Rules:
+          - Id: Standard-IA-Storage
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 60
+                StorageClass: STANDARD_IA
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - HEAD
+              - PUT
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - '*'
+            ExposedHeaders:
+              - x-amz-server-side-encryption
+            Id: CORSRuleId1
+      Tags:
+        - Key: Name
+          Value: ${BUCKETNAME}
+        - Key: role
+          Value: storage
+    DependsOn: CloudFrontOriginAccessIdentity
