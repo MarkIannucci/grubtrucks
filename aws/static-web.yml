@@ -14,7 +14,7 @@ Resources:
       DomainName: ${FQDN}
       DomainValidationOptions:
         - DomainName:   ${FQDN}
-          HostedZoneId: !Ref: 'DNSZone'
+          HostedZoneId: !Ref 'DNSZone'
       ValidationMethod: DNS
 
   S3Bucket:
@@ -197,7 +197,7 @@ Resources:
   Route53RecordSetGroup:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneId: !Ref: 'DNSZone'
+      HostedZoneId: !Ref 'DNSZone'
       # Use this Recordset block if the site will NOT be behind Okta
       RecordSets:
       - Name: ${FQDN}
