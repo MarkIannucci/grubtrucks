@@ -38,4 +38,4 @@ Resources:
           Value: ${BUCKETNAME}
         - Key: role
           Value: storage
-    DependsOn: CloudFrontOriginAccessIdentity
+    #DependsOn: CloudFrontOriginAccessIdentity

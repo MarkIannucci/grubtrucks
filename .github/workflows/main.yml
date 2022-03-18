@@ -20,9 +20,9 @@ env:
     REQUESTER: pbosley
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-20.04
-    name: AWS CLI Test
+    name: Deploy GrubTrucks to AWS
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -42,9 +42,6 @@ jobs:
       uses: unfor19/install-aws-cli-action@master
       with:
         version: 2
-        
-    - name: Print AWS CLI Version
-      run: aws --version
       
     - name: Environment Substitution
       run: envsubst '${ENV} ${STACK_NAME} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > deploy.yml
