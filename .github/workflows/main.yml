@@ -16,7 +16,7 @@ env:
     STACK_NAME: grubtrucks-patrickbosley-com
     ENV: dev
     ORGUNIT: it
-    PROJECT: grubtrucks.patrickbosley.com
+    PROJECT: grubtrucks-patrickbosley-com
     REQUESTER: pbosley
 
 jobs:
