@@ -1,4 +1,4 @@
-name: test-action
+name: GrubTrucks Deployment
 
 on:
   push:
@@ -10,6 +10,15 @@ on:
         required: true
         default: 'us-east-1'
 
+env:
+    FQDN: grubtrucks.patrickbosley.com
+    BUCKETNAME: grubtrucks.patrickbosley.com
+    STACK_NAME: grubtrucks-patrickbosley-com
+    ENV: dev
+    ORGUNIT: it
+    PROJECT: grubtrucks.patrickbosley.com
+    REQUESTER: pbosley
+
 jobs:
   test:
     runs-on: ubuntu-20.04
@@ -17,6 +26,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -37,8 +47,15 @@ jobs:
       run: aws --version
       
     - name: Environment Substitution
-      run: envsubst '${ENV} ${STACK_NAME} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/grubtrucks.yml > deploy.yml
+      run: envsubst '${ENV} ${STACK_NAME} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > deploy.yml
       
-    - name: Describe EC2 Instances
-      run: aws ec2 describe-instances
+    - name: Deploy CLoudFormation Template
+      run: |
+        echo Deploying ${STACK_NAME}
+        chmod +x ./cfn_wrapper.sh
+        source ./cfn_wrapper.sh
+        cfn_wrapper aws cloudformation deploy --template-file deploy.yml --stack-name ${STACK_NAME} --force-upload --capabilities CAPABILITY_NAMED_IAM --tags Name=${STACK_NAME} Stackname=${STACK_NAME} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
       shell: bash
+
+    - name: Copy Source Files to S3 Bucket
+      run: aws s3 cp --recursive src/  s3://${BUCKETNAME}
