@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Static Website Creation for ${FQDN}
+Resources:
+  DNSZone: 
+    Type: "AWS::Route53::HostedZone"
+    Properties: 
+      HostedZoneConfig: 
+        Comment: '${FQDN}'
+      Name: '${FQDN}'
+
+S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${BUCKETNAME}
+      LifecycleConfiguration:
+        Rules:
+          - Id: CleanUp
+            Status: Enabled
+            ExpirationInDays: 7
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Name
+          Value: ${BUCKETNAME}
+        - Key: role
+          Value: storage

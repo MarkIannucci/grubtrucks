@@ -1,12 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Static Website Creation for ${FQDN}
 Resources:
-  DNSZone: 
-    Type: "AWS::Route53::HostedZone"
-    Properties: 
-      HostedZoneConfig: 
-        Comment: '${FQDN}'
-      Name: '${FQDN}'
 
   Certificate: 
     Type: AWS::CertificateManager::Certificate

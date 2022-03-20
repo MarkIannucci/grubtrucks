@@ -2,7 +2,7 @@ name: GrubTrucks Deployment
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main1 ]
   workflow_dispatch:
     inputs:
       region:
@@ -12,8 +12,10 @@ on:
 
 env:
     FQDN: grubtrucks.patrickbosley.com
+    DEPLOYBUCKET: grubtruck_deploy
     BUCKETNAME: grubtrucks.patrickbosley.com
-    STACK_NAME: grubtrucks-patrickbosley-com
+    WEBSTACK: grubtrucks-patrickbosley-com
+    DNSSTACK: grubtrucks-patrickbosley-com-dns
     ENV: dev
     ORGUNIT: it
     PROJECT: grubtrucks-patrickbosley-com
@@ -43,16 +45,28 @@ jobs:
       with:
         version: 2
       
-    - name: Environment Substitution
-      run: envsubst '${ENV} ${STACK_NAME} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > deploy.yml
-      
-    - name: Deploy CLoudFormation Template
+    - name: Deploy DNS Prep CloudFormation Template
+      if: "contains(github.event.head_commit.message, 'dnsprep')"
       run: |
+        echo Performing Variable Substitution
+        envsubst '${ENV} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DEPLOYBUCKET}' < ./aws/dnsprep.yml > dnsdeploy.yml
         echo Deploying ${STACK_NAME}
         chmod +x ./cfn_wrapper.sh
         source ./cfn_wrapper.sh
-        cfn_wrapper aws cloudformation deploy --template-file deploy.yml --stack-name ${STACK_NAME} --force-upload --capabilities CAPABILITY_NAMED_IAM --tags Name=${STACK_NAME} Stackname=${STACK_NAME} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
+        cfn_wrapper aws cloudformation deploy --template-file webdeploy.yml --stack-name ${DNSSTACK} --force-upload --tags Name=${DNSSTACK} Stackname=${STACK_NAME} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
+      shell: bash
+
+    - name: Deploy Static Web CloudFormation Template
+      if: "!contains(github.event.head_commit.message, 'dnsprep')"
+      run: |
+        echo Performing Variable Substitution
+        envsubst '${ENV} ${WEBSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > webdeploy.yml
+        echo Deploying ${STACK_NAME}
+        chmod +x ./cfn_wrapper.sh
+        source ./cfn_wrapper.sh
+        cfn_wrapper aws cloudformation deploy --template-file webdeploy.yml --stack-name ${WEBSTACK} --force-upload --capabilities CAPABILITY_NAMED_IAM --tags Name=${WEBSTACK} Stackname=${STACK_NAME} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
       shell: bash
 
     - name: Copy Source Files to S3 Bucket
+      if: "!contains(github.event.head_commit.message, 'dnsprep')"
       run: aws s3 cp --recursive src/  s3://${BUCKETNAME}
