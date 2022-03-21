@@ -46,7 +46,9 @@ jobs:
         version: 2
       
     - name: Deploy DNS Prep CloudFormation Template
-      if: "contains(github.event.head_commit.message, 'dnsprep')"
+      if: | 
+        contains(github.event.head_commit.message, 'dnsprep') &&
+        contains(github.event.head_commit.message, 'infra')
       run: |
         echo Performing Variable Substitution
         envsubst '${ENV} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DEPLOYBUCKET}' < ./aws/dnsprep.yml > dnsdeploy.yml
