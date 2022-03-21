@@ -38,6 +38,25 @@ I created a JavaScript function ./src/js/grubtrucks.js that includes all of that
 
 * AWS Account
     * IAM User Account with programmatic access for the access key secrets below
+        * User Policy
+        ````JSON
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Sid": "VisualEditor0",
+                    "Effect": "Allow",
+                    "Action": [
+                        "sts:AssumeRole",
+                        "sts:TagSession"
+                    ],
+                    "Resource": [
+                        "arn:aws:iam::489312212545:role/psbtestrole"
+                    ]
+                }
+            ]
+        }
+        ````
     * IAM Role with required priviledges to deploy resources to the AWS Account
 
 * Secrets:
