@@ -11,7 +11,7 @@ Resources:
 S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: ${DEPLYBUCKET}
+      BucketName: ${DEPLOYBUCKET}
       LifecycleConfiguration:
         Rules:
           - Id: CleanUp

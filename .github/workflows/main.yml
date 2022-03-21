@@ -50,7 +50,7 @@ jobs:
       run: |
         echo Performing Variable Substitution
         envsubst '${ENV} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DEPLOYBUCKET}' < ./aws/dnsprep.yml > dnsdeploy.yml
-        echo Deploying ${STACK_NAME}
+        echo Deploying ${DNSSTACK}
         chmod +x ./cfn_wrapper.sh
         source ./cfn_wrapper.sh
         cfn_wrapper aws cloudformation deploy --template-file dnsdeploy.yml --stack-name ${DNSSTACK} --force-upload --tags Name=${DNSSTACK} Stackname=${DNSSTACK} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
@@ -70,7 +70,7 @@ jobs:
       run: |
         echo Performing Variable Substitution
         envsubst '${ENV} ${WEBSTACK} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > webdeploy.yml
-        echo Deploying ${STACK_NAME}
+        echo Deploying ${WEBSTACK}
         chmod +x ./cfn_wrapper.sh
         source ./cfn_wrapper.sh
         cfn_wrapper aws cloudformation deploy --template-file webdeploy.yml --stack-name ${WEBSTACK} --force-upload --capabilities CAPABILITY_NAMED_IAM --tags Name=${WEBSTACK} Stackname=${WEBSTACK} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
