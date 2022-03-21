@@ -11,7 +11,7 @@ Resources:
 S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: ${BUCKETNAME}
+      BucketName: ${DEPLYBUCKET}
       LifecycleConfiguration:
         Rules:
           - Id: CleanUp
@@ -24,7 +24,7 @@ S3Bucket:
         RestrictPublicBuckets: true
       Tags:
         - Key: Name
-          Value: ${BUCKETNAME}
+          Value: ${DEPLOYBUCKET}
         - Key: role
           Value: storage
 Outputs:
