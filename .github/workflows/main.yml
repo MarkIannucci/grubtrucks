@@ -53,7 +53,7 @@ jobs:
         echo Deploying ${STACK_NAME}
         chmod +x ./cfn_wrapper.sh
         source ./cfn_wrapper.sh
-        cfn_wrapper aws cloudformation deploy --template-file webdeploy.yml --stack-name ${DNSSTACK} --force-upload --tags Name=${DNSSTACK} Stackname=${STACK_NAME} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
+        cfn_wrapper aws cloudformation deploy --template-file dnsdeploy.yml --stack-name ${DNSSTACK} --force-upload --tags Name=${DNSSTACK} Stackname=${STACK_NAME} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
       shell: bash
 
     - name: Zip and Copy Lambda Function to Deploy Bucket
