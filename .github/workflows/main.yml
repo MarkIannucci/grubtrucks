@@ -75,7 +75,7 @@ jobs:
         contains(github.event.head_commit.message, 'infra')
       run: |
         echo Performing Variable Substitution
-        envsubst '${ENV} ${WEBSTACK} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > webdeploy.yml
+        envsubst '${ENV} ${WEBSTACK} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME} ${DEPLOYBUCKET}' < ./aws/static-web.yml > webdeploy.yml
         echo Deploying ${WEBSTACK}
         chmod +x ./cfn_wrapper.sh
         source ./cfn_wrapper.sh
