@@ -59,7 +59,9 @@ jobs:
       shell: bash
 
     - name: Zip and Copy Lambda Function to Deploy Bucket
-      if: "!contains(github.event.head_commit.message, 'dnsprep')"
+      if: |
+        !contains(github.event.head_commit.message, 'dnsprep') &&
+        contains(github.event.head_commit.message, 'infra')
       run: |
         echo Zipping Security Headers Lambda Code
         cd hdrs/ && zip -r ../${PROJECT}-sec-hdrs.zip index.js
@@ -68,7 +70,9 @@ jobs:
         aws s3 cp ${PROJECT}-sec-hdrs.zip s3://${DEPLOYBUCKET}/functions/${PROJECT}-sec-hdrs.zip
 
     - name: Deploy Static Web CloudFormation Template
-      if: "!contains(github.event.head_commit.message, 'dnsprep')"
+      if: |
+        !contains(github.event.head_commit.message, 'dnsprep') &&
+        !contains(github.event.head_commit.message, 'infra')
       run: |
         echo Performing Variable Substitution
         envsubst '${ENV} ${WEBSTACK} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > webdeploy.yml
@@ -79,5 +83,7 @@ jobs:
       shell: bash
 
     - name: Copy Source Files to S3 Bucket
-      if: "!contains(github.event.head_commit.message, 'dnsprep')"
+      if: |
+        !contains(github.event.head_commit.message, 'dnsprep') &&
+        !contains(github.event.head_commit.message, 'infra')
       run: aws s3 cp --recursive src/  s3://${BUCKETNAME}
