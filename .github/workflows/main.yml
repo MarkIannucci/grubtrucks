@@ -47,8 +47,7 @@ jobs:
       
     - name: Deploy DNS Prep CloudFormation Template
       if: | 
-        contains(github.event.head_commit.message, 'dnsprep') &&
-        contains(github.event.head_commit.message, 'infra')
+        contains(github.event.head_commit.message, 'dnsprep')
       run: |
         echo Performing Variable Substitution
         envsubst '${ENV} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DEPLOYBUCKET}' < ./aws/dnsprep.yml > dnsdeploy.yml
@@ -61,8 +60,7 @@ jobs:
 
     - name: Output DNS Zone Name Servers
       if: | 
-        contains(github.event.head_commit.message, 'dnsprep') &&
-        contains(github.event.head_commit.message, 'infra')
+        contains(github.event.head_commit.message, 'dnsprep')
       run: |
         aws cloudformation describe-stacks --stack-name ${DNSStack} --query "Stacks[0].Outputs[?OutputKey=='DNSZoneNameServers'].OutputValue" --output text
       shell: bash
