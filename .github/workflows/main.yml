@@ -12,7 +12,7 @@ on:
 
 env:
     FQDN: grubtrucks.patrickbosley.com
-    DEPLOYBUCKET: grubtruck_deploy
+    DEPLOYBUCKET: grubtruck-deploy
     BUCKETNAME: grubtrucks.patrickbosley.com
     WEBSTACK: grubtrucks-patrickbosley-com
     DNSSTACK: grubtrucks-patrickbosley-com-dns
