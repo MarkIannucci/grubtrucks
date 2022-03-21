@@ -2,7 +2,7 @@ name: GrubTrucks Deployment
 
 on:
   push:
-    branches: [ main1 ]
+    branches: [ main ]
   workflow_dispatch:
     inputs:
       region:
@@ -56,11 +56,20 @@ jobs:
         cfn_wrapper aws cloudformation deploy --template-file webdeploy.yml --stack-name ${DNSSTACK} --force-upload --tags Name=${DNSSTACK} Stackname=${STACK_NAME} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
       shell: bash
 
+    - name: Zip and Copy Lambda Function to Deploy Bucket
+      if: "!contains(github.event.head_commit.message, 'dnsprep')"
+      run: |
+        echo Zipping Security Headers Lambda Code
+        cd hdrs/ && zip -r ../${PROJECT}-sec-hdrs.zip index.js
+        cd ../
+        echo Copying Lambda Edge Function Code to S3 Deploy Bucket
+        aws s3 cp ${PROJECT}-sec-hdrs.zip s3://${DEPLOYBUCKET}/functions/${PROJECT}-sec-hdrs.zip
+
     - name: Deploy Static Web CloudFormation Template
       if: "!contains(github.event.head_commit.message, 'dnsprep')"
       run: |
         echo Performing Variable Substitution
-        envsubst '${ENV} ${WEBSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > webdeploy.yml
+        envsubst '${ENV} ${WEBSTACK} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > webdeploy.yml
         echo Deploying ${STACK_NAME}
         chmod +x ./cfn_wrapper.sh
         source ./cfn_wrapper.sh

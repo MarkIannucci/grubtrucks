@@ -45,7 +45,7 @@ cfn_wrapper () {
   touch ids.log
   fill_history
   touch lock
-  echo "$($@; echo $? >> $CFN_LOG_STACKNAME.exit ; sleep 10; rm lock)" &
+  echo "$($@; echo $? >> $CFN_LOG_STACKNAME.exit ; sleep 15; rm lock)" &
   tail_logs
   set exitcode=$(cat $CFN_LOG_STACKNAME.exit)
   return $exitcode

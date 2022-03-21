@@ -27,3 +27,15 @@ S3Bucket:
           Value: ${BUCKETNAME}
         - Key: role
           Value: storage
+Outputs:
+  DNSZoneId:
+    Description: DNS Zone ID
+    Value: !Ref DNSZone
+  DNSZoneNameServers:
+    Description: DNS Zone Name Server List
+    Value: !Join [',', !GetAtt DNSZone.NameServers]
+  ZoneId:
+    Value: !Ref DNSZone
+    Export:
+      Name:
+        Fn::Sub: "${AWS::StackName}-ZoneId"
