@@ -72,7 +72,7 @@ jobs:
     - name: Deploy Static Web CloudFormation Template
       if: |
         !contains(github.event.head_commit.message, 'dnsprep') &&
-        !contains(github.event.head_commit.message, 'infra')
+        contains(github.event.head_commit.message, 'infra')
       run: |
         echo Performing Variable Substitution
         envsubst '${ENV} ${WEBSTACK} ${DNSSTACK} ${REQUESTER} ${PROJECT} ${ORGUNIT} ${FQDN} ${DNSZONEID} ${BUCKETNAME}' < ./aws/static-web.yml > webdeploy.yml
@@ -85,5 +85,5 @@ jobs:
     - name: Copy Source Files to S3 Bucket
       if: |
         !contains(github.event.head_commit.message, 'dnsprep') &&
-        !contains(github.event.head_commit.message, 'infra')
+        contains(github.event.head_commit.message, 'infra')
       run: aws s3 cp --recursive src/  s3://${BUCKETNAME}
