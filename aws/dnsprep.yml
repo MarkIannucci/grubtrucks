@@ -8,25 +8,25 @@ Resources:
         Comment: '${FQDN}'
       Name: '${FQDN}'
 
-S3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: ${DEPLOYBUCKET}
-      LifecycleConfiguration:
-        Rules:
-          - Id: CleanUp
-            Status: Enabled
-            ExpirationInDays: 7
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: true
-      Tags:
-        - Key: Name
-          Value: ${DEPLOYBUCKET}
-        - Key: role
-          Value: storage
+  S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${DEPLOYBUCKET}
+        LifecycleConfiguration:
+          Rules:
+            - Id: CleanUp
+              Status: Enabled
+              ExpirationInDays: 7
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        Tags:
+          - Key: Name
+            Value: ${DEPLOYBUCKET}
+          - Key: role
+            Value: storage
 Outputs:
   DNSZoneId:
     Description: DNS Zone ID
