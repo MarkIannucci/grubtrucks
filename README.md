@@ -34,7 +34,10 @@ I created a JavaScript function ./src/js/grubtrucks.js that includes all of func
 
 ## Infrastructure
 
-I chose to use an AWS Static WebSite architecture for this project. 
+I chose to use an AWS Static WebSite architecture for this project. The deployment, as detailed later, is done in 2 parts to
+account for the DNS zone creation ahead of the certificate creation which needs to have the DNS publicly available for validation of the request.
+
+The diagram below outlines the architecture.
 
 ## Diagram
 
@@ -42,9 +45,20 @@ I chose to use an AWS Static WebSite architecture for this project.
 
 ## Deployment
 
-### Requirements
+### Requirements/Preparation
 
-* AWS Account
+* Adjust Variables as needed
+    * FQDN: Fully Qualified Domain Name of Site
+    * DEPLOYBUCKET: S3 bucket name for Lambda Code deployment
+    * BUCKETNAME: S3 bucket name for web-content
+    * WEBSTACK: Cloud Formation Stack Name for the Static Web Application
+    * DNSSTACK: Cloud Formation Stack Name for the DNS Preparation
+    * ENV: Environment name
+    * ORGUNIT: Organizational Unit for reporting
+    * PROJECT: Project name
+    * REQUESTER: Person requesting resources
+
+* AWS Account for deployment
     * IAM User Account with programmatic access for the access key secrets below
         * User Inline Policy - to assume role
         ````JSON
@@ -65,6 +79,7 @@ I chose to use an AWS Static WebSite architecture for this project.
             ]
         }
         ````
+* IAM Role for deployment
     * IAM Role with required priviledges to deploy resources to the AWS Account
         * Trusted entities
         ````JSON
@@ -95,5 +110,33 @@ I chose to use an AWS Static WebSite architecture for this project.
     * AWS_ROLE_TO_ASSUME
 
 ### Process
+
+I used commit substrings to determine which actions to take during a deployment.
+* "dnsprep"
+    * deploys the DNS Zone and S# deployment bucket for the security header lambda function
+* "infra"
+    * deploys the static website, including Security header Lambda function and web contents
+* neither of the above
+    * deploys just the web content to the S3 bucket
+
+#### DNS Prep
+
+* Commit to the project with "dnsprep" in the commit string
+* This will initiate the CloudFormation deployment for the DNS preparation
+* Once completed, check the output of the "Output DNS Zone Name Servers" action of the deployment
+* Create Name Server records in the parent domain for each of the records listed in the previous step
+* Proceed to infrastructure deployment
+
+NOTE: The infrastructure stack will use AWS CLoud Formation Cross-Stack references to get the DNS Zone ID from this stack
+
+#### Infrastructure Deployment
+
+* Commit to the project with "infra" in the commit string
+* This will initiate the CloudFormation deployment for the WebSite
+* Once completed, the site will be available at the Fully Qualified Domain Name
+
+### Updates
+
+* Commiting to the project WITHOUT either of the above will only update the Web Content in the S3 Bucket
 
 

@@ -56,6 +56,15 @@ jobs:
         chmod +x ./cfn_wrapper.sh
         source ./cfn_wrapper.sh
         cfn_wrapper aws cloudformation deploy --template-file dnsdeploy.yml --stack-name ${DNSSTACK} --force-upload --tags Name=${DNSSTACK} Stackname=${DNSSTACK} env=${ENV} orgunit=${ORGUNIT} project=${PROJECT} role=cloudformation-stack requester=${REQUESTER} reponame=${GITHUB_REPOSITORY}
+        aws cloudformation describe-stacks --stack-name ${DNSStack} --query "Stacks[0].Outputs[?OutputKey=='DNSZoneNameServers'].OutputValue" --output text
+      shell: bash
+
+    - name: Output DNS Zone Name Servers
+      if: | 
+        contains(github.event.head_commit.message, 'dnsprep') &&
+        contains(github.event.head_commit.message, 'infra')
+      run: |
+        aws cloudformation describe-stacks --stack-name ${DNSStack} --query "Stacks[0].Outputs[?OutputKey=='DNSZoneNameServers'].OutputValue" --output text
       shell: bash
 
     - name: Zip and Copy Lambda Function to Deploy Bucket
@@ -84,6 +93,5 @@ jobs:
 
     - name: Copy Source Files to S3 Bucket
       if: |
-        !contains(github.event.head_commit.message, 'dnsprep') &&
-        contains(github.event.head_commit.message, 'infra')
+        !contains(github.event.head_commit.message, 'dnsprep')
       run: aws s3 cp --recursive src/  s3://${BUCKETNAME}
