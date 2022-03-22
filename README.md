@@ -10,6 +10,10 @@ This was also my first attempt at using GitHub actions for deployment.
 We are primarily a GitLab shop, so I had to familiarize myself with the syntax differences. 
 There is definitely some additional logic efficiencies that could be incorporated into the GitHub Actions that I did not have time to research and implement.
 
+### Demo Site
+
+I deployed this to https://grubtrucks.patrickbosley.com for demonstration purposes.
+
 ## Code
 
 ### UI
