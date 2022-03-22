@@ -143,4 +143,8 @@ NOTE: The infrastructure stack will use AWS CLoud Formation Cross-Stack referenc
 
 * Commiting to the project WITHOUT either of the above will only update the Web Content in the S3 Bucket
 
+## Future Enhancement
 
+* Use path filters on push instead of the commit strings to determine actions
+* Provide additional views (grouping, menu filters, remove expired, etc) of the dataset via JavaScript
+* Investigate and resolve issues reported in the Browser console
