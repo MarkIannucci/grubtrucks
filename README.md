@@ -18,7 +18,7 @@ I deployed this to https://grubtrucks.patrickbosley.com for demonstration purpos
 
 ### UI
 
-For the UI I grabbed a free BootStrap template to make the site a bit presentable. 
+For the UI I grabbed a free BootStrap template (https://startbootstrap.com/theme/sb-admin-2) to make the site a bit presentable. 
 I made the following minor modifications to the template
 * Removed user profile components
 * Removed static table elements as I planned to populate them with the JavaScript function
