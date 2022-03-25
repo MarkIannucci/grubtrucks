@@ -28,6 +28,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+        
+    - name: Install AWS CLI
+      id: install-aws-cli
+      uses: unfor19/install-aws-cli-action@master
+      with:
+        version: 2
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -38,12 +44,6 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
         role-duration-seconds: 1200
         role-session-name: DeploymentSession
-        
-    - name: Install AWS CLI
-      id: install-aws-cli
-      uses: unfor19/install-aws-cli-action@master
-      with:
-        version: 2
       
     - name: Deploy DNS Prep CloudFormation Template
       if: | 
