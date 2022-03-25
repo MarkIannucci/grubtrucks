@@ -11,14 +11,14 @@ on:
         default: 'us-east-1'
 
 env:
-    FQDN: grubtrucks.patrickbosley.com
+    FQDN: grubtrucks.findafoodtruck.ga
     DEPLOYBUCKET: grubtruck-deploy
-    BUCKETNAME: grubtrucks.patrickbosley.com
-    WEBSTACK: grubtrucks-patrickbosley-com
-    DNSSTACK: grubtrucks-patrickbosley-com-dns
+    BUCKETNAME: grubtrucks.findagoodtruck.ga
+    WEBSTACK: grubtrucks-findafoodtruck-ga
+    DNSSTACK: grubtrucks-findafoodtruck-ga-dns
     ENV: dev
     ORGUNIT: it
-    PROJECT: grubtrucks-patrickbosley-com
+    PROJECT: grubtrucks-findafoodtruck-ga
     REQUESTER: pbosley
 
 jobs:
